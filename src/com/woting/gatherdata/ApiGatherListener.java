@@ -44,7 +44,7 @@ public class ApiGatherListener extends Thread {
     @Override
     public void run() {
         try {
-            sleep(5000);
+            sleep(1000);
             ApiGatherMemory agm=ApiGatherMemory.getInstance();
             int i=0;
             while (this.alService==null&&i++<5) {
