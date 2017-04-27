@@ -44,8 +44,8 @@ public class GatherDataController {
             alPo.setBeginTime(new Timestamp(Long.valueOf(oneData.getBeginTime())));
             alPo.setDealFlag(1);// 处理成功
             alPo.setOwnerType(201);
-            alPo.setOwnerId("--");
-            alPo.setApiName(oneData.getApiName());
+            alPo.setOwnerId(oneData.getUserId());//保存用户ID
+            alPo.setApiName(oneData.getApiName());//保存事件类型
             alPo.setObjId(oneData.getObjId());
             alPo.setObjType(oneData.getObjType());
             alPo.setDeviceId(oneData.getIMEI());
