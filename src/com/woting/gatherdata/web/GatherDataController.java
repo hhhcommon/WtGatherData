@@ -26,6 +26,7 @@ public class GatherDataController {
     public Map<String,Object> gatherData(HttpServletRequest request) {
         //获取数据
         Map<String, Object> m = RequestUtils.getDataFromRequest(request);
+        if (m==null) return null;
         //1-获得原始数据
         String jsonParamStr=(m.get("data")==null?null:(String)m.get("data"));
         if (StringUtils.isNullOrEmptyOrSpace(jsonParamStr)) return null;
@@ -49,26 +50,26 @@ public class GatherDataController {
             alPo.setDealFlag(1);// 处理成功
             alPo.setOwnerType(201);
             alPo.setMethod("POST");
-            if (oneData.get("UserId")!=null) {
-                alPo.setOwnerId((String)oneData.get("UserId"));//保存用户ID
+            if (oneData.get("UserId")!=null && !oneData.get("UserId").equals("")) {
+                alPo.setOwnerId(oneData.get("UserId").toString());//保存用户ID
             }
-            if (oneData.get("ApiName")!=null) {
-                alPo.setApiName((String)oneData.get("ApiName"));//保存事件类型
+            if (oneData.get("ApiName")!=null && !oneData.get("ApiName").equals("")) {
+                alPo.setApiName(oneData.get("ApiName").toString());//保存事件类型
             }
-            if (oneData.get("ObjId")!=null) {
-                alPo.setObjId((String)oneData.get("ObjId"));
+            if (oneData.get("ObjId")!=null && !oneData.get("ObjId").equals("")) {
+                alPo.setObjId(oneData.get("ObjId").toString());
             }
-            if (oneData.get("ObjType")!=null) {
-                alPo.setObjType((String)oneData.get("ObjType"));
+            if (oneData.get("ObjType")!=null && !oneData.get("ObjType").equals("")) {
+                alPo.setObjType(oneData.get("ObjType").toString());
             }
-            if (oneData.get("IMEI")!=null) {
-                alPo.setDeviceId((String)oneData.get("IMEI"));
+            if (oneData.get("IMEI")!=null && !oneData.get("IMEI").equals("")) {
+                alPo.setDeviceId(oneData.get("IMEI").toString());
             }
-            if (oneData.get("DeviceType")!=null) {
-                alPo.setDeviceType(Integer.valueOf((String)oneData.get("DeviceType")));
+            if (oneData.get("DeviceType")!=null && !oneData.get("DeviceType").equals("")) {
+                alPo.setDeviceType(Integer.valueOf(oneData.get("DeviceType").toString()));
             }
-            if (oneData.get("ReqParam")!=null) {
-                alPo.setReqParam((String)oneData.get("ReqParam"));
+            if (oneData.get("ReqParam")!=null && !oneData.get("ReqParam").equals("")) {
+                alPo.setReqParam(oneData.get("ReqParam").toString());
             }
             alPo.setEndTime(new Timestamp(System.currentTimeMillis()));
             try {
