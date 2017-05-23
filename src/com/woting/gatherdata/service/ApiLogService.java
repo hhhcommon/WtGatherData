@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import com.spiritdata.framework.core.dao.mybatis.MybatisDAO;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.StringUtils;
+import com.woting.cm.core.media.MediaType;
+import com.woting.cm.playcount.service.PlayCountService;
 import com.woting.gatherdata.persis.pojo.ApiLogPo;
 
 /**
@@ -23,6 +25,8 @@ import com.woting.gatherdata.persis.pojo.ApiLogPo;
 public class ApiLogService {
     @Resource(name="defaultDAO")
     private MybatisDAO<ApiLogPo> apiLogDao; //api调用
+    @Resource
+    private PlayCountService playCountService;
 
     @PostConstruct
     public void initParam() {
@@ -37,5 +41,10 @@ public class ApiLogService {
         if (StringUtils.isNullOrEmptyOrSpace(alp.getId())) alp.setId(SequenceUUID.getPureUUID());
         alp.setReturnData(null);
         apiLogDao.insert(alp);
+        //以下是多分支，可用多个队列处理，目前仅处理调整播放次数，不采用多分支
+        if ("L-open".equals(alp.getApiName())) {
+            MediaType mt=MediaType.buildByTypeName(alp.getObjType());
+            playCountService.increamPlayCount(mt, alp.getObjId());
+        }
     }
 }

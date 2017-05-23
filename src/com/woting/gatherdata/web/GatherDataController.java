@@ -146,6 +146,6 @@ public class GatherDataController {
             retMap.put("ReturnType", "1002");
             retMap.put("Message", "调整失败");
         }
-        return null;
+        return retMap;
     }
 }
