@@ -71,7 +71,27 @@ public class GatherDataController {
             if (oneData.get("ReqParam")!=null && !oneData.get("ReqParam").equals("")) {
                 alPo.setReqParam(oneData.get("ReqParam").toString());
             }
-            alPo.setEndTime(new Timestamp(System.currentTimeMillis()));
+            if (oneData.get("UserId")!=null && !oneData.get("UserId").equals("")) {
+                alPo.setOwnerId(oneData.get("UserId").toString());
+            } else {
+                alPo.setOwnerId("0");
+            }
+//            if (oneData.get("EndTime")!=null && !oneData.get("EndTime").equals("")) {
+//                alPo.setEndTime(Timestamp.valueOf(oneData.get("EndTime").toString()));
+//            }
+            String apiName=alPo.getApiName();
+            if (apiName.equals("E-play")||apiName.equals("E-pause")||apiName.equals("E-close")) {//在这种情况下，EndTime是播放偏移量
+                //处理播放时间
+                long offsetTime=0;
+                try {
+                    offsetTime=Long.parseLong(oneData.get("EndTime")+"");
+                    offsetTime=offsetTime*1000;
+                    if (offsetTime==0) offsetTime=100;
+                } catch(Exception e){}
+                alPo.setEndTime(new Timestamp(offsetTime));
+            } else {
+                alPo.setEndTime(new Timestamp(System.currentTimeMillis()));
+            }
             try {
                 ApiGatherMemory.getInstance().put2Queue(alPo);
             } catch (InterruptedException e) {}
