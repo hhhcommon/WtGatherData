@@ -58,6 +58,7 @@ public class PlayCountService {
                 contentDao.insert("insertPlayCount", param);
             }
             adjustCachePlayCount(mt, contentId);
+            ret=1;
         } catch(Exception e) {
             e.printStackTrace();
             ret=-1;
@@ -97,6 +98,7 @@ public class PlayCountService {
                 contentDao.insert("insertPlayCount", param);
             }
             adjustCachePlayCount(mt, contentId);
+            ret=1;
         } catch(Exception e) {
             e.printStackTrace();
             ret=-1;
@@ -124,7 +126,7 @@ public class PlayCountService {
             for (Long p: pl) if (p>maxPlayCount) maxPlayCount=p;
             param.put("playCount", maxPlayCount);
 
-            param.put("cacheId", mt.getTabName()+"_"+contentId+"_PLAYCOUNT");
+            param.put("cacheId", mt.getTypeName()+"_"+contentId+"_PLAYCOUNT");
             int c=cacheDao.getCount("existContent", param);
             if (c==1) cacheDao.update("setPlayCount", param);
             else if (c==0) {
@@ -133,6 +135,7 @@ public class PlayCountService {
                 cacheDao.delete("deleteDuplicate", param);
                 cacheDao.insert("insertPlayCount", param);
             }
+            ret=1;
         } catch(Exception e) {
             e.printStackTrace();
             ret=-1;

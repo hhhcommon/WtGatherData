@@ -42,7 +42,7 @@ public class ApiLogService {
         alp.setReturnData(null);
         apiLogDao.insert(alp);
         //以下是多分支，可用多个队列处理，目前仅处理调整播放次数，不采用多分支
-        if ("L-open".equals(alp.getApiName())) {
+        if ("E-play".equals(alp.getApiName())&&alp.getEndTime().getTime()==1) {
             MediaType mt=MediaType.buildByTypeName(alp.getObjType());
             playCountService.increamPlayCount(mt, alp.getObjId());
         }
