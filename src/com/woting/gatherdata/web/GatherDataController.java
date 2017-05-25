@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
@@ -14,12 +15,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.RequestUtils;
 import com.spiritdata.framework.util.StringUtils;
+import com.woting.cm.core.media.MediaType;
+import com.woting.cm.playcount.service.PlayCountService;
 import com.woting.gatherdata.ApiGatherUtils;
 import com.woting.gatherdata.mem.ApiGatherMemory;
 import com.woting.gatherdata.persis.pojo.ApiLogPo;
 
 @Controller
 public class GatherDataController {
+    @Resource
+    private PlayCountService playCountService;
+
     @SuppressWarnings("unchecked")
     @RequestMapping(value="sendGatherData.do")
     @ResponseBody
@@ -97,5 +103,69 @@ public class GatherDataController {
             } catch (InterruptedException e) {}
         }
         return null;
+    }
+
+    @RequestMapping(value="setPlayCount.do")
+    @ResponseBody
+    public Map<String,Object> setPlayCount(HttpServletRequest request) {
+        //获取数据
+        Map<String, Object> m = RequestUtils.getDataFromRequest(request);
+        Map<String,Object> retMap=new HashMap<String, Object>();
+        if (m==null) {
+            retMap.put("ReturnType", "0000");
+            retMap.put("Message", "无法获取需要的参数");
+            return retMap;
+        }
+        //1-得到服务标识
+        String serverName=(m.get("ServerName")==null?null:m.get("ServerName")+"");
+        int pcdType=-1;
+        try {pcdType=Integer.parseInt(m.get("PCDType")+"");} catch(Exception e) {pcdType=-1;}
+        if (pcdType!=0||!"抓取服务".equals(serverName)) {
+            retMap.put("ReturnType", "2001");
+            retMap.put("Message", "没有服务标识不合法：ServerName="+m.get("ServerName")+";PCDType="+m.get("PCDType"));
+            return retMap;
+        }
+        //2-得到节目类型
+        String mediaType=(m.get("MediaType")==null?null:m.get("MediaType")+"");
+        MediaType MT=MediaType.buildByTypeName(mediaType);
+        if (MT==MediaType.ERR) {
+            retMap.put("ReturnType", "2002");
+            retMap.put("Message", "节目类型不合法：MediaType="+m.get("MediaType"));
+            return retMap;
+        }
+        //3-得到节目Id
+        String contentId=(m.get("ContentId")==null?null:m.get("ContentId")+"");
+        if (StringUtils.isNullOrEmptyOrSpace(contentId)) {
+            retMap.put("ReturnType", "2003");
+            retMap.put("Message", "节目Id不能为空");
+            return retMap;
+        }
+        //4-得到播放次数
+        long playCount=-1l;
+        try {playCount=Long.parseLong(m.get("PlayCount")+"");} catch(Exception e) {playCount=-1l;}
+        if (playCount==-1l) {
+            retMap.put("ReturnType", "2004");
+            retMap.put("Message", "播放次数不合法：PlayCount="+m.get("PlayCount"));
+            return retMap;
+        }
+        //5-得到发布组织
+        String publisher=(m.get("Publisher")==null?null:m.get("Publisher")+"");
+        if (StringUtils.isNullOrEmptyOrSpace(publisher)) {
+            retMap.put("ReturnType", "2005");
+            retMap.put("Message", "发布组织名称不能为空");
+            return retMap;
+        }
+        int flag=playCountService.setPlayCount(MT, contentId, playCount, publisher);
+        if (flag==0) {
+            retMap.put("ReturnType", "1003");
+            retMap.put("Message", "节目不存在");
+        } else if (flag==1) {
+            retMap.put("ReturnType", "1001");
+            retMap.put("Message", "调整成功");
+        } else {
+            retMap.put("ReturnType", "1002");
+            retMap.put("Message", "调整失败");
+        }
+        return retMap;
     }
 }

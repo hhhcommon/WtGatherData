@@ -9,7 +9,7 @@
   <!-- 配置编码格式，与eclpse的IDE环境编码格式匹配 -->
   <!-- D:\workIDE\projects\WtGatherData || C:\Users\Administrator\git\WtGatherData || D:\WBWorkDir\WtContentMng -->
   <properties>
-	<projectDir>D:\workIDE\projects\WtGatherData</projectDir>
+	<projectDir>C:\Users\Administrator\git\WtGatherData</projectDir>
   </properties>
 
   <parent>
