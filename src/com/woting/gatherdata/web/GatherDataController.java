@@ -89,7 +89,6 @@ public class GatherDataController {
                 try {
                     offsetTime=Long.parseLong(oneData.get("EndTime")+"");
                     offsetTime=(offsetTime+1)*1000;
-//                    if (offsetTime==0) offsetTime=1000;
                 } catch(Exception e){}
                 alPo.setEndTime(new Timestamp(offsetTime));
             } else {
