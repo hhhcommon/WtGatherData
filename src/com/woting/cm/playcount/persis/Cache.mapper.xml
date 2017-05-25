@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--
+  数据库缓存
+-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="CACHEDB">
+  <!-- 判断内容是否存在 -->
+  <select id="existContent" resultType="java.lang.Integer" parameterType="java.util.Map">
+    select count(id) from wt_PlayCountDB where id=#{cacheId, jdbcType=VARCHAR}
+  </select>
+  <!-- 设置播放次数(更新) -->
+  <update id="setPlayCount" parameterType="java.util.Map">
+    update wt_PlayCountDB set playCount=#{playCount, jdbcType=BIGINT} where id=#{cacheId, jdbcType=VARCHAR}
+  </update>
+  <!-- 新增播放次数 -->
+  <insert id="insertPlayCount" parameterType="java.util.Map">
+    insert into wt_PlayCountDB
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="cacheId!=null">id,</if>
+      <if test="tableName!=null">resTableName,</if>
+      <if test="contentId!=null">resId,</if>
+      <if test="playCount!=null">playCount,</if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="cacheId!=null">#{cacheId,jdbcType=VARCHAR},</if>
+      <if test="tableName!=null">#{tableName,jdbcType=VARCHAR},</if>
+      <if test="contentId!=null">#{contentId,jdbcType=VARCHAR},</if>
+      <if test="playCount!=null">#{playCount,jdbcType=BIGINT},</if>
+    </trim>
+  </insert>
+  <!-- 删除重复数据 -->
+  <delete id="deleteDuplicate" parameterType="java.util.Map">
+    delete from wt_PlayCountDB where id=#{cacheId, jdbcType=VARCHAR}
+  </delete>
+</mapper>

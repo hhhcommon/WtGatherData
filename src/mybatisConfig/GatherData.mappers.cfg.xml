@@ -7,5 +7,7 @@
   </typeAliases>
   <mappers>
     <mapper resource="com/woting/gatherdata/persis/sql/ApiLog.mapper.xml"/>
+    <mapper resource="com/woting/cm/playcount/persis/Content.mapper.xml"/>
+    <mapper resource="com/woting/cm/playcount/persis/Cache.mapper.xml"/>
   </mappers>
 </configuration>

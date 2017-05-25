@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--
+  内容处理
+-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="WT_CONTENT">
+  <!-- 判断内容是否存在 -->
+  <select id="existContent" resultType="java.lang.Integer" parameterType="java.util.Map">
+    select count(id) from ${tableName} where id=#{contentId, jdbcType=VARCHAR}
+  </select>
+  <!-- 判断播放次数是否存在 -->
+  <select id="existPlayCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+    select count(id) from wt_MediaPlayCount
+    where resTableName=#{tableName, jdbcType=VARCHAR} and resId=#{contentId, jdbcType=VARCHAR} and publisher=#{publisher, jdbcType=VARCHAR}
+  </select>
+  <!-- 设置播放次数(更新) -->
+  <update id="setPlayCount" parameterType="java.util.Map">
+    update wt_MediaPlayCount set playCount=#{playCount, jdbcType=BIGINT}
+    where resTableName=#{tableName, jdbcType=VARCHAR} and resId=#{contentId, jdbcType=VARCHAR} and publisher=#{publisher, jdbcType=VARCHAR}
+  </update>
+  <!-- 新增播放次数 -->
+  <insert id="insertPlayCount" parameterType="java.util.Map">
+    insert into wt_MediaPlayCount
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id!=null">id,</if>
+      <if test="tableName!=null">resTableName,</if>
+      <if test="contentId!=null">resId,</if>
+      <if test="playCount!=null">playCount,</if>
+      <if test="publisher!=null">publisher,</if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id!=null">#{id,jdbcType=VARCHAR},</if>
+      <if test="tableName!=null">#{tableName,jdbcType=VARCHAR},</if>
+      <if test="contentId!=null">#{contentId,jdbcType=VARCHAR},</if>
+      <if test="playCount!=null">#{playCount,jdbcType=BIGINT},</if>
+      <if test="publisher!=null">#{publisher,jdbcType=VARCHAR},</if>
+    </trim>
+  </insert>
+  <!-- 删除重复数据 -->
+  <delete id="deleteDuplicate" parameterType="java.util.Map">
+    delete from wt_MediaPlayCount
+    where resTableName=#{tableName, jdbcType=VARCHAR} and resId=#{contentId, jdbcType=VARCHAR} and publisher=#{publisher, jdbcType=VARCHAR}
+  </delete>
+
+  <!-- 自增一运算(更新) -->
+  <update id="increamPlayCount" parameterType="java.util.Map">
+    update wt_MediaPlayCount set playCount=playCount+1
+    where resTableName=#{tableName, jdbcType=VARCHAR} and resId=#{contentId, jdbcType=VARCHAR} and publisher=#{publisher, jdbcType=VARCHAR}
+  </update>
+  <!-- 获得最大的播放次数 -->
+  <select id="getMaxPlayCount" resultType="java.lang.Long" parameterType="java.util.Map">
+    select max(playCount) from wt_MediaPlayCount
+    where resTableName=#{tableName, jdbcType=VARCHAR} and resId=#{contentId, jdbcType=VARCHAR} and publisher=#{publisher, jdbcType=VARCHAR}
+  </select>
+
+  <!-- 获得某内容的播放次数列表(多个发布者的) -->
+  <select id="getPlayCountListByContent" resultType="java.lang.Long" parameterType="java.util.Map">
+    select playCount from wt_MediaPlayCount
+    where resTableName=#{tableName, jdbcType=VARCHAR} and resId=#{contentId, jdbcType=VARCHAR}
+  </select>
+</mapper>
