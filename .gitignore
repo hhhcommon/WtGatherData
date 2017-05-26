@@ -1,3 +1,5 @@
 /target/
 
 /logs/
+
+/WebContent/WEB-INF/lib/
