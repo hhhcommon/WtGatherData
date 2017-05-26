@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<!-- 数据收集配置 -->
+<configuration>
+  <typeAliases>
+    <typeAlias alias="ApiLog" type="com.woting.gatherdata.persis.pojo.ApiLogPo"/>
+  </typeAliases>
+  <mappers>
+    <mapper resource="com/woting/gatherdata/persis/sql/ApiLog.mapper.xml"/>
+    <mapper resource="com/woting/cm/playcount/persis/Content.mapper.xml"/>
+    <mapper resource="com/woting/cm/playcount/persis/Cache.mapper.xml"/>
+  </mappers>
+</configuration>
